@@ -1,0 +1,27 @@
+{
+  "name": "todo-app",
+  "version": "1.0.0",
+  "description": "A simple todo app with pure javascript",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Ricardo Moreno",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "gulp": "^3.9.1",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-imagemin": "^3.1.1",
+    "gulp-sass": "^3.1.0",
+    "mongodb": "^2.2.22",
+    "mongojs": "^2.4.0",
+    "webpack": "^2.2.1",
+    "webpack-stream": "^3.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "semistandard": "^9.2.1"
+  }
+}

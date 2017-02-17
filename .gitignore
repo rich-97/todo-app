@@ -1,0 +1,4 @@
+node_modules
+public/dist
+public/scss/vendor
+npm-debug.log

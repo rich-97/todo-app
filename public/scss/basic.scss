@@ -1,0 +1,37 @@
+body {
+  @include bgc($gray);
+  box-sizing: border-box;
+  font-family: 'PT mono';
+}
+
+.container {
+  @include media(xs) {
+    @include center-block(70, 80);
+  }
+
+  @include media(sm) {
+    @include center-block(60, 80);
+  }
+
+  @include media(md) {
+    @include center-block(50, 80);
+  }
+
+  @include media(lg) {
+    @include center-block(45, 80);
+  }
+
+  @include bgc($white);
+  border-radius: 5px;
+  padding: 20px;
+}
+
+form {
+  border-bottom: 1px solid $gray;
+  padding-bottom: 20px;
+
+  label {
+    display: block;
+    text-align: center;
+  }
+}

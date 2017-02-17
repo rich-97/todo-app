@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="author" content="Ricardo Moreno">
+        <title>Todo App Nodejs</title>
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Mono">
+        <script src="js/bundle.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <div class="container">
+            <form action="/" method="post">
+                <h1>Write a <b>Todo</b></h1>
+                <div class="form-input-submit">
+                    <input type="text" name="todo">
+                    <button class="plus" type="submit">
+                        <img src="svg/plus.svg" alt="plus">
+                    </button>
+                </div>
+            </form>
+
+            <ul class="list"></ul>
+
+            <div class="panel">
+                <div class="panel-total"></div>
+                <div class="panel-already">
+                    <img src="svg/already.svg" alt="already">
+                </div>
+                <div class="panel-delete">
+                    <img src="svg/garbage.svg" alt="delete">
+                </div>
+            </div>
+        </div>
+        <script src="http://localhost:35729/livereload.js" charset="utf-8"></script>
+    </body>
+</html>
