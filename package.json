@@ -4,7 +4,7 @@
   "description": "A simple todo app with pure javascript",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "gulp; node index.js"
   },
   "keywords": [],
   "author": "Ricardo Moreno",

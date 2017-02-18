@@ -15,8 +15,7 @@ It's a todo app make with pure javascript server/client side.
 
 1.  Clone the repo.
 2.  Install the dependencies with `bower install && npm install`.
-3.  Build the assets with `gulp`.
 
 ## Usage
 
-After of build the assets you can run the server with `nodejs index.js` or in a port specific `PORT=4001; nodejs index.js`.
+You can build the assets and run the server with `npm start` or in a port specific `PORT=4001; npm start`.
