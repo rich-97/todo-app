@@ -7,6 +7,8 @@ const allTodos = require('./all_todos');
 const listMessage = require('./list_message');
 const Todo = require('./Todo');
 
+// TODO: Improve to be able to update a todo.
+
 window.onload = function () {
   const $form = document.querySelector('form');
   const $list = document.querySelector('.list');
@@ -31,8 +33,8 @@ window.onload = function () {
 
     for (let i = 0; i < res.length; i++) {
       const el = res[i];
-      const newTodo = new Todo(el.id, el.text);
-      arrIds.push(el.id);
+      const newTodo = new Todo(el.id, el.text, el.fact);
+      arrIds.push(newTodo.id);
 
       $list.innerHTML += `<li>${newTodo.toHtml()}</li>`;
       setTotal();
@@ -57,7 +59,26 @@ window.onload = function () {
       const $todoText = todos[i].children[1];
 
       if ($cbx.checked) {
-        $todoText.classList.toggle('already');
+        const id = todos[i].id;
+        const method = 'PUT';
+        let uri = `/update?id=${id}`;
+        let fact;
+
+        if ($todoText.classList.contains('already')) {
+          fact = 'fact=0';
+        } else {
+          fact = 'fact=1';
+        }
+
+        uri = `${uri}&${fact}`;
+
+        ajax({
+          url: uri,
+          method: method
+        }).then(function () {
+          $todoText.classList.toggle('already');
+          $cbx.checked = false;
+        }).catch((err) => console.log(err));
       }
     }
   };
@@ -123,7 +144,7 @@ window.onload = function () {
         setEvents(allTodos());
       }).catch((err) => { console.log(err); });
     } else {
-      alert('The input is empty.');
+      window.alert('The input is empty.');
     }
 
     e.preventDefault();

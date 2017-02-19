@@ -70,10 +70,27 @@ function onRequest (req, res) {
 
     db.todo.remove({ id: id }, () => res.end());
   } else if (reqUrl.pathname === '/favicon.ico') {
-      const ico = fs.readFileSync('./favicon.ico');
-      res.writeHead(200);
-      res.write(ico);
-      res.end();
+    const ico = fs.readFileSync('./favicon.ico');
+    res.writeHead(200);
+    res.write(ico);
+    res.end();
+  } else if (reqUrl.pathname === '/update' && /id=\d+&fact=[0-1]/.test(reqUrl.query)) {
+    const query = qs.parse(reqUrl.query);
+    const id = parseInt(query.id);
+    const fact = Boolean(parseInt(query.fact));
+    console.log(query);
+    console.log(fact);
+
+    db.todo.update(
+      { id: id },
+      {
+        $set: { fact: fact }
+      },
+      function () {
+        res.writeHead(200);
+        res.end();
+      }
+    );
   }
 }
 
