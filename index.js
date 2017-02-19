@@ -30,8 +30,8 @@ serveStatics({
 
 server.on('request', onRequest);
 server.listen(port, host, listen);
-db.on('error', onErrorDb);
-db.on('connect', onConnectDb);
+db.on('error', onErrorDB);
+db.on('connect', onConnectDB);
 
 function onRequest (req, res) {
   const reqUrl = url.parse(req.url);
@@ -52,6 +52,7 @@ function onRequest (req, res) {
         let str = chunk.toString();
         let obj = JSON.parse(str);
         db.todo.insert(obj);
+        res.writeHead(201);
       });
     }
 
@@ -68,6 +69,11 @@ function onRequest (req, res) {
     const id = parseInt(query.id);
 
     db.todo.remove({ id: id }, () => res.end());
+  } else if (reqUrl.pathname === '/favicon.ico') {
+      const ico = fs.readFileSync('./favicon.ico');
+      res.writeHead(200);
+      res.write(ico);
+      res.end();
   }
 }
 
@@ -75,11 +81,11 @@ function listen () {
   console.log(`The server is running on ${host}:${port}.`);
 }
 
-function onErrorDb () {
+function onErrorDB () {
   console.log('Error to connect to the database.');
-  process.exit();
+  process.exit(1);
 }
 
-function onConnectDb () {
-  console.log('Database connect.');
+function onConnectDB () {
+  console.log('Database connected.');
 }
