@@ -5,7 +5,7 @@ const colors = require('colors');
 module.exports = logger;
 
 function logger (server) {
-  server.on('request', (req, res) => {
+  server.on('request', function (req, res) {
     const start = +new Date();
     const url = req.url.green;
     const method = req.method.underline.red;

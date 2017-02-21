@@ -25,7 +25,7 @@ logger(server);
 serveStatics({
   server: server,
   rootPath: path.resolve(__dirname, 'public/dist/assets'),
-  ignore: ['/', '/todos']
+  ignore: ['/', '/todos', '/delete', '/update']
 });
 
 server.on('request', onRequest);
@@ -33,6 +33,7 @@ server.listen(port, host, listen);
 db.on('error', onErrorDB);
 db.on('connect', onConnectDB);
 
+/* The big routing */
 function onRequest (req, res) {
   const reqUrl = url.parse(req.url);
 
@@ -78,15 +79,12 @@ function onRequest (req, res) {
     const query = qs.parse(reqUrl.query);
     const id = parseInt(query.id);
     const fact = Boolean(parseInt(query.fact));
-    console.log(query);
-    console.log(fact);
 
     db.todo.update(
       { id: id },
       {
         $set: { fact: fact }
-      },
-      function () {
+      }, function () {
         res.writeHead(200);
         res.end();
       }
