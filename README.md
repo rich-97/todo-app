@@ -1,10 +1,10 @@
-# todo-app
+<h1 align="center">todo-app</h1>
+
+<p align="center">
+  <img src="app.gif">
+</p>
 
 It's a todo app make with pure javascript server/client side.
-
-## Quick show
-
-<img style="width: 90%; display: block; margin: 0 auto;" src="app.gif">
 
 ## Requeriments
 
