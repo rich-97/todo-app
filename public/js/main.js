@@ -147,6 +147,8 @@ window.onload = function () {
       window.alert('The input is empty.');
     }
 
+    $input.value = '';
+
     e.preventDefault();
   };
 
