@@ -1,6 +1,5 @@
 'use strict';
 
-const ajax = require('./ajax');
 const setTotal = require('./set_total');
 const allTodos = require('./all_todos');
 const listMessage = require('./list_message');
@@ -16,6 +15,23 @@ function setEvents ($todos) {
     const $delete = $todos[i].parentElement.children[1];
     const id = $todos[i].id;
 
+    $todos[i].ondblclick = function () {
+      const newText = prompt('Enter the new text: ');
+
+      if (newText) {
+        ajax.query({
+          url: '/update',
+          method: 'PUT',
+          params: {
+            id: id,
+            text: newText
+          }
+        }).then(function () {
+          $todos[i].children[1].textContent = newText;
+        }).catch(err => console.log(err));
+      }
+    };
+
     $select.onclick = function () {
       const $cbx = this.previousElementSibling;
 
@@ -28,12 +44,13 @@ function setEvents ($todos) {
 
     $delete.onclick = function () {
       const $parent = this.parentElement;
-      const uri = `/delete?id=${id}`;
-      const method = 'DELETE';
 
-      ajax({
-        url: uri,
-        method: method
+      ajax.query({
+        url: '/delete',
+        method: 'DELETE',
+        params: {
+          id: id
+        }
       }).then(function () {
         $parent.parentElement.removeChild($parent);
         setTotal(--total);

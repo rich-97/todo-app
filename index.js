@@ -75,20 +75,33 @@ function onRequest (req, res) {
     res.writeHead(200);
     res.write(ico);
     res.end();
-  } else if (reqUrl.pathname === '/update' && /id=\d+&fact=[0-1]/.test(reqUrl.query)) {
+  } else if (reqUrl.pathname === '/update') {
     const query = qs.parse(reqUrl.query);
     const id = parseInt(query.id);
-    const fact = Boolean(parseInt(query.fact));
 
-    db.todo.update(
-      { id: id },
-      {
-        $set: { fact: fact }
-      }, function () {
-        res.writeHead(200);
-        res.end();
-      }
-    );
+    if (/id=\d+&fact=[0-1]/.test(reqUrl.query)) {
+      const fact = Boolean(parseInt(query.fact));
+
+      db.todo.update(
+        { id: id },
+        {
+          $set: { fact: fact }
+        }, () => res.end()
+      );
+    } else if (/id=\d+&text=[a-z0-9]*/.test(reqUrl.query)) {
+      const newText = query.text;
+
+      db.todo.update(
+        { id: id },
+        {
+          $set: { text: newText }
+        }, () => res.end()
+      );
+    }
+  } else if (reqUrl.pathname === '/req-ajax/dist/ajax.min.js') {
+    const file = fs.readFileSync('./node_modules/req-ajax/dist/ajax.min.js');
+    res.write(file);
+    res.end();
   }
 }
 
