@@ -13,7 +13,7 @@ window.onload = function () {
   const $already = document.querySelector('.panel-already');
   const $delete = document.querySelector('.panel-delete');
 
-  let arrIds = [];
+  let id = 0;
 
   ajax.get('/todos')
     .then(function (res) {
@@ -21,26 +21,17 @@ window.onload = function () {
 
       if (!res.length) {
         $list.innerHTML = listMessage();
-      }
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          const el = res[i];
+          const newTodo = new Todo(el.id, el.text, el.fact);
 
-      for (let i = 0; i < res.length; i++) {
-        const el = res[i];
-        const newTodo = new Todo(el.id, el.text, el.fact);
-        arrIds.push(newTodo.id);
-
-        $list.innerHTML += `<li>${newTodo.toHtml()}</li>`;
-        setTotal();
-        setEvents(allTodos());
+          $list.innerHTML += `<li>${newTodo.toHtml()}</li>`;
+          setTotal();
+          setEvents(allTodos());
+        }
       }
     }).catch((err) => console.log(err));
-
-  let id;
-
-  if (arrIds.length > 0) {
-    id = Math.max.apply(null, arrIds);
-  } else {
-    id = 0;
-  }
 
   $already.onclick = function () {
     const todos = allTodos();
@@ -113,7 +104,7 @@ window.onload = function () {
     const url = this.action;
 
     if (todoText !== '') {
-      id++;
+      id = allTodos().length + 1;
 
       const newTodo = new Todo(id, todoText);
 

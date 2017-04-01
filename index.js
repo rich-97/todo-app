@@ -19,7 +19,9 @@ const view = path.join(__dirname, 'public/dist/index.html');
 
 const db = mongojs('todo-app', ['todo']);
 
-logger(server);
+if (process.env.DEV) {
+  logger(server);
+}
 
 /* Serve statics files */
 serveStatics({

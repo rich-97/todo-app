@@ -2,7 +2,7 @@
 
 class Todo {
   constructor (id, text, fact) {
-    this.id = id;
+    this.id = parseInt(id);
     this.text = text;
     this.fact = Boolean(fact);
   }
