@@ -104,7 +104,11 @@ window.onload = function () {
     const url = this.action;
 
     if (todoText !== '') {
-      id = allTodos().length + 1;
+      if (allTodos().length > 0) {
+        id = parseInt(allTodos()[allTodos().length - 1].id) + 1;
+      } else {
+        id = 1;
+      }
 
       const newTodo = new Todo(id, todoText);
 
@@ -120,6 +124,7 @@ window.onload = function () {
 
           setTotal();
           setEvents(allTodos());
+          console.log(newTodo);
         }).catch((err) => { console.log(err); });
     } else {
       window.alert('The input is empty.');

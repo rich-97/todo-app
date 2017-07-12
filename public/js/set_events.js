@@ -16,7 +16,7 @@ function setEvents ($todos) {
     const id = $todos[i].id;
 
     $todos[i].ondblclick = function () {
-      const newText = prompt('Enter the new text: ');
+      const newText = prompt('Modify the TODO:', $todos[i].children[1].textContent);
 
       if (newText) {
         ajax.query({
