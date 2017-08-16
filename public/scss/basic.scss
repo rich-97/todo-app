@@ -1,5 +1,8 @@
+* {
+  @include trans;
+}
+
 body {
-  @include bgc($gray);
   box-sizing: border-box;
   font-family: 'PT mono';
 }
@@ -20,14 +23,9 @@ body {
   @include media(lg) {
     @include center-block(45, 80);
   }
-
-  @include bgc($white);
-  border-radius: 5px;
-  padding: 20px;
 }
 
 form {
-  border-bottom: 1px solid $gray;
   padding-bottom: 20px;
 
   label {

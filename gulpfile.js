@@ -36,7 +36,7 @@ gulp.task('watch', () => {
   gulp.watch(
     [
       './public/scss/*.scss',
-      './public/js/main.js',
+      './public/js/*.js',
       './public/index.html'
     ],
     ['scss', 'webpack', 'min-html']);
