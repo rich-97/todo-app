@@ -6,111 +6,108 @@ const qs = require('querystring')
 
 const mongojs = require('mongojs')
 
-const serveStatics = require('./modules/statics')
-const logger = require('./modules/logger')
-
 const server = http.createServer()
 const port = process.env.PORT || 8080
-const host = '127.0.0.1'
-
 const view = path.join(__dirname, 'public/dist/index.html')
-
 const db = mongojs('todo-app', ['todo'])
 
-if (process.env.DEV) {
-  logger(server)
-}
+const serveStatics = require('./statics')
+const logger = require('./logger')
+const mime = require('./mime')
+const route = require('./router')(server)
 
-/* Serve statics files */
-serveStatics({
-  server: server,
-  rootPath: path.resolve(__dirname, 'public/dist/assets'),
-  ignore: ['/', '/todos', '/delete', '/update']
-})
+serveStatics(path.resolve(__dirname, 'public/dist/assets'), server)
+process.env.DEV ? logger(server) : void 0
 
-server.on('request', onRequest)
-server.listen(port, host, listen)
+server.listen(port, onListen)
 db.on('error', onErrorDB)
 db.on('connect', onConnectDB)
 
-// The big routing.
-function onRequest (req, res) {
-  const reqUrl = url.parse(req.url)
+route('/', function(req, res) {
+  if (req.method === 'GET') {
+    let html = fs.readFileSync(view)
+    let htmlStr = html.toString()
 
-  if (reqUrl.pathname === '/') {
-    let method = req.method.toLowerCase()
-
-    if (method === 'get') {
-      let html = fs.readFileSync(view)
-      let htmlStr = html.toString()
-
-      res.writeHead(200, { 'content-type': 'text/html' })
-      res.write(htmlStr)
-    }
-
-    if (method === 'post') {
-      req.on('data', function (chunk) {
-        let str = chunk.toString()
-        let obj = JSON.parse(str)
-
-        db.todo.insert(obj)
-        res.writeHead(201)
-      })
-    }
-
-    res.end()
-  } else if (reqUrl.pathname === '/todos') {
-    db.todo.find(function (err, docs) {
-      if (err) { throw err }
-
-      res.writeHead(200, { 'content-type': 'application/json' })
-      res.write(JSON.stringify(docs) + '\n')
-      res.end()
-    })
-  } else if (reqUrl.pathname === '/delete' && /id=\d+/.test(reqUrl.query)) {
-    const query = qs.parse(reqUrl.query)
-    const id = parseInt(query.id)
-
-    db.todo.remove({ id: id }, () => res.end())
-  } else if (reqUrl.pathname === '/favicon.ico') {
-    const ico = fs.readFileSync('./favicon.ico')
-
-    res.writeHead(200)
-    res.write(ico)
-    res.end()
-  } else if (reqUrl.pathname === '/update') {
-    const query = qs.parse(reqUrl.query)
-    const id = parseInt(query.id)
-
-    if (/id=\d+&fact=[0-1]/.test(reqUrl.query)) {
-      const fact = Boolean(parseInt(query.fact))
-
-      db.todo.update(
-        { id: id },
-        {
-          $set: { fact: fact }
-        }, () => res.end()
-      )
-    } else if (/id=\d+&text=[a-z0-9]*/.test(reqUrl.query)) {
-      const newText = query.text
-
-      db.todo.update(
-        { id: id },
-        {
-          $set: { text: newText }
-        }, () => res.end()
-      )
-    }
-  } else if (reqUrl.pathname === '/req-ajax/dist/ajax.min.js') {
-    const file = fs.readFileSync('./node_modules/req-ajax/dist/ajax.min.js')
-
-    res.write(file)
+    res.writeHead(200, mime.getContentType('html'))
+    res.write(htmlStr)
     res.end()
   }
-}
 
-function listen () {
-  console.log(`The server is running on ${host}:${port}.`)
+  if (req.method === 'POST') {
+    req.on('data', function(chunk) {
+      let str = chunk.toString()
+      let obj = JSON.parse(str)
+
+      db.todo.insert(obj)
+      res.writeHead(201)
+      res.end()
+    })
+  }
+})
+
+route('/todos', function(req, res) {
+  db.todo.find(function(err, todos) {
+    if (err) { throw err }
+
+    res.writeHead(200, mime.getContentType('json'))
+    res.write(JSON.stringify(todos))
+    res.end()
+  })
+})
+
+route('/delete', function(req, res) {
+  if (/id=\d+/.test(req.urlObj.query)) {
+    const query = qs.parse(req.urlObj.query)
+    const id = parseInt(query.id)
+
+    db.todo.remove({ id: id }, function() {
+      res.writeHead(200)
+      res.end()
+    })
+  }
+})
+
+route('/favicon.ico', function(req, res) {
+  fs.readFile('./favicon.ico', function (err, ico) {
+    if (err) { throw err }
+
+    res.writeHead(200)
+    res.end(ico)
+  })
+})
+
+route('/update', function(req, res) {
+  const query = qs.parse(req.urlObj.query)
+  const id = parseInt(query.id)
+
+  if (/id=\d+&fact=[0-1]/.test(req.urlObj.query)) {
+    const fact = Boolean(parseInt(query.fact))
+
+    db.todo.update({ id }, { $set: { fact } }, function() {
+      res.writeHead(200)
+      res.end()
+    })
+  }
+
+  if (/id=\d+&text=[a-z0-9]*/.test(req.urlObj.query)) {
+    const newText = query.text
+
+    db.todo.update({ id }, { $set: { text: newText } }, function() {
+      res.writeHead(200)
+      res.end()
+    })
+  }
+})
+
+route('/req-ajax/dist/ajax.min.js', function(req, res) {
+  const file = fs.readFile('./node_modules/req-ajax/dist/ajax.min.js', function(err, file) {
+    res.writeHead(200)
+    res.end(file)
+  })
+})
+
+function onListen () {
+  console.log(`The server is running on *:${port}.`)
 }
 
 function onErrorDB () {
